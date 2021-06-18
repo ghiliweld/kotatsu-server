@@ -1,0 +1,23 @@
+{
+  "name": "kotatsu-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghiliweld/kotatsu-server.git"
+  },
+  "author": "ghiliweld",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ghiliweld/kotatsu-server/issues"
+  },
+  "homepage": "https://github.com/ghiliweld/kotatsu-server#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
