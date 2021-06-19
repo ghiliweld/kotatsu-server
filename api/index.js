@@ -12,11 +12,11 @@ for (let i = 1; i < 11; i++) {
   }
 }
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/board', (req, res) => {
+app.get('/api/board', (req, res) => {
   res.json(board)
 })
 
@@ -31,6 +31,23 @@ app.post('/:coords', (req, res) => {
     board[coords] = char;
     res.send('success!');
 })
+
+// const app = require('express')()
+// // const { v4 } = require('uuid')
+
+// app.get('/api', (req, res) => {
+//   // const path = `/api/item/${v4()}`
+//   res.setHeader('Content-Type', 'text/html')
+//   res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate')
+//   res.end(`Hello! Go to item: <a href="${path}">${path}</a>`)
+// })
+
+// app.get('/api/item/:slug', (req, res) => {
+//   const { slug } = req.params
+//   res.end(`Item: ${slug}`)
+// })
+
+module.exports = app
 
 // app.listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`)
