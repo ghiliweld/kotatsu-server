@@ -6,10 +6,18 @@ const port = 3000
 app.use(cors())
 
 const board = {};
-board["10_10"] = "🍊"
+for (let i = 1; i < 11; i++) {
+  for (let j = 1; j < 11; j++) {
+    board[`${i}_${j}`] = '.';
+  }
+}
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
+})
+
+app.get('/board', (req, res) => {
+  res.json(board)
 })
 
 app.get('/:coords', (req, res) => {
