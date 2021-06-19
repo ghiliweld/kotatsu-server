@@ -32,6 +32,7 @@ app.post('/:coords', (req, res) => {
     res.send('success!');
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`)
+// })
+module.exports = app;
