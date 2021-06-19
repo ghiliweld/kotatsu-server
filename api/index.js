@@ -20,12 +20,12 @@ app.get('/api/board', (req, res) => {
   res.json(board)
 })
 
-app.get('/:coords', (req, res) => {
+app.get('/api/:coords', (req, res) => {
     const { coords } = req.params;
     res.send(board[coords]);
 })
 
-app.post('/:coords', (req, res) => {
+app.post('/api/:coords', (req, res) => {
     const { coords } = req.params;
     const { char } = req.body;
     board[coords] = char;
@@ -46,8 +46,6 @@ app.post('/:coords', (req, res) => {
 //   const { slug } = req.params
 //   res.end(`Item: ${slug}`)
 // })
-
-module.exports = app
 
 // app.listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`)
