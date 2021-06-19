@@ -4,6 +4,8 @@ const app = express()
 const port = 3000
 
 app.use(cors())
+app.use(bodyParser.json({ limit: '150mb' }))
+app.use(express.json());
 
 const board = {};
 for (let i = 1; i < 11; i++) {
