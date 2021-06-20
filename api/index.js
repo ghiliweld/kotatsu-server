@@ -8,11 +8,10 @@ app.use(cors())
 // app.use(bodyParser.json({ limit: '150mb' }))
 app.use(express.json());
 
-const board = new Map();
-
+const board = {};
 for (let i = 1; i < 11; i++) {
   for (let j = 1; j < 11; j++) {
-    board.set(`${i}_${j}`, '.');
+    board[`${i}_${j}`] = '.';
   }
 }
 
@@ -26,13 +25,13 @@ app.get('/api/board', (req, res) => {
 
 app.get('/api/:coords', (req, res) => {
     const { coords } = req.params;
-    res.json({ char: board.get(coords) });
+    res.json({ char: board[coords] });
 })
 
 app.post('/api/:coords', (req, res) => {
     const { coords } = req.params;
     const { char } = req.body;
-    board.set(coords, char);
+    board[coords] = char;
     res.json({ msg: 'success!' });
 })
 
