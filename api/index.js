@@ -23,6 +23,11 @@ app.get('/api/board', (req, res) => {
   res.json(board)
 })
 
+app.post('/api/board', (req,res) => {
+  const { new_board } = req.body
+  board = new_board;
+})
+
 app.get('/api/:coords', (req, res) => {
     const { coords } = req.params;
     res.json({ char: board[coords] });
