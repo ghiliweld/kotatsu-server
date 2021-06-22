@@ -24,8 +24,12 @@ app.get('/api/board', (req, res) => {
 })
 
 app.post('/api/board', (req,res) => {
-  const { new_board } = req.body
-  board = new_board;
+  for (let i = 1; i < 11; i++) {
+    for (let j = 1; j < 11; j++) {
+      board[`${i}_${j}`] = '.';
+    }
+  }
+  res.json({msg: 'success!'})
 })
 
 app.get('/api/:coords', (req, res) => {
