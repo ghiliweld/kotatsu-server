@@ -26,7 +26,7 @@ app.post("/api/board", (req, res) => {
 });
 
 app.put("/api/board", (req, res) => {
-  board[coord] = req.body.char;
+  board[req.body.coord] = req.body.char;
   res.json({ msg: "success!" });
 });
 
