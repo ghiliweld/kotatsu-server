@@ -46,7 +46,6 @@ app.get("/api/board", (req, res) => {
 // });
 
 app.put("/api/board", (req, res) => {
-<<<<<<< HEAD
   // board[coord] = req.body.char;
   // res.json({ msg: "success!" });
 
@@ -77,10 +76,6 @@ app.put("/api/board", (req, res) => {
   
   res.statusCode = 200
   res.end()
-=======
-  board[req.body.coord] = req.body.char;
-  res.json({ msg: "success!" });
->>>>>>> 14a3817d8e0c52aa0658ed6b96bf8e1e8d15a379
 });
 
 // Free the CORS!
