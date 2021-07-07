@@ -72,7 +72,7 @@ app.put("/api/board", (req, res) => {
           let v = versionNum;
           subscriptions[k].sendVersion({
               version: v,
-              body: req.body
+              body: JSON.stringify(board)
           })
           versionNum++;
       }
