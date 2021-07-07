@@ -5,6 +5,10 @@ import { http_server as braidify } from 'braidify';
 const app = express();
 let versionNum = 0;
 
+// Subscription data
+var subscriptions = {}
+var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
+
 // app.use(cors());
 app.use(express.json());
 app.use(free_the_cors);
