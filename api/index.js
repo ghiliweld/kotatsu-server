@@ -9,6 +9,8 @@ let versionNum = 0;
 var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
+let log = ''
+
 app.options('*', cors())
 app.use(express.json());
 //app.use(free_the_cors());
@@ -23,23 +25,31 @@ for (let i = 1; i < 11; i++) {
 
 app.get("/api/board", (req, res) => {
   // res.json(board);
-  if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
-    res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
-    subscriptions[subscription_hash(req)] = res
-    console.log('We are subscribing at hash', subscription_hash(req))
-    res.statusCode = 200
-  } else {
+  try{
+    if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
+      res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
+      subscriptions[subscription_hash(req)] = res
+      console.log('We are subscribing at hash', subscription_hash(req))
       res.statusCode = 200
+    } else {
+        res.statusCode = 200
+    }
+  
+    // Send the current version
+    res.sendVersion({
+        version: versionNum++,
+        body: JSON.stringify(board)
+    })
+  
+    if (!req.subscribe) res.end()
+  } catch (error) {
+    log += '\n' + error.toString()
   }
-
-  // Send the current version
-  res.sendVersion({
-      version: versionNum++,
-      body: JSON.stringify(board)
-  })
-
-  if (!req.subscribe) res.end()
 });
+
+app.get('/api/log', (req, res) => {
+  res.send(log)
+})
 
 // app.post("/api/board", (req, res) => {
 //   for (let i = 1; i < 11; i++) {
