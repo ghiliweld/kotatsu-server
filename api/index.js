@@ -11,7 +11,7 @@ var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
 // app.use(cors());
 app.use(express.json());
-app.use(free_the_cors);
+app.use(free_the_cors());
 app.use(braidify);    // Add braid stuff to req and res
 
 const board = {};
@@ -96,7 +96,7 @@ function free_the_cors (req, res, next) {
   var free_the_cors = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "OPTIONS, HEAD, GET, PUT, UNSUBSCRIBE",
-      "Access-Control-Allow-Headers": "subscribe, peer, version, parents, merge-type, content-type, patches, cache-control"
+      "Access-Control-Allow-Headers": "subscribe, peer, version, parents, merge-type, content-type, patches, cache-control, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
   }
   Object.entries(free_the_cors).forEach(x => res.setHeader(x[0], x[1]))
   if (req.method === 'OPTIONS') {
