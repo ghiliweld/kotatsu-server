@@ -26,6 +26,7 @@ for (let i = 1; i < 11; i++) {
 
 app.get("/api/board", (req, res) => {
   // res.json(board);
+  console.log('test')
   try{
     if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
       res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
