@@ -38,12 +38,11 @@ app.get("/api/board", (req, res) => {
     }
   
     // Send the current version
-    res.setHeader("Access-Control-Allow-Origin", "*")
     res.sendVersion({
         version: versionNum++,
         body: JSON.stringify(board)
     })
-  
+    res.setHeader("Access-Control-Allow-Origin", "*")
     if (!req.subscribe) res.end()
   } catch (error) {
     log += '\n' + error.toString()
