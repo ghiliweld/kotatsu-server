@@ -9,7 +9,7 @@ let versionNum = 0;
 var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
-let log = ''
+let log = 'hello'
 
 app.options('*', cors())
 app.use(express.json());
