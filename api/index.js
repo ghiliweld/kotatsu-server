@@ -10,6 +10,7 @@ var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
 let log = 'hello'
+console.log = (message) => {log += message + '\n'}
 
 app.options('*', cors())
 app.use(express.json());
