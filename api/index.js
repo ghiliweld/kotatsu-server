@@ -26,8 +26,9 @@ for (let i = 1; i < 11; i++) {
 
 app.get("/api/board", (req, res) => {
   // res.json(board);
-  console.log('test')
+  console.log('test1 ' + Date.now())
   try{
+    console.log('test2 ' + Date.now())
     if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
       res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
       subscriptions[subscription_hash(req)] = res
@@ -36,13 +37,15 @@ app.get("/api/board", (req, res) => {
     } else {
         res.statusCode = 200
     }
-  
+    console.log('test3 ' + Date.now())
     // Send the current version
     res.sendVersion({
         version: versionNum++,
         body: JSON.stringify(board)
     })
+    console.log('test4 ' + Date.now())
     res.setHeader("Access-Control-Allow-Origin", "*")
+    console.log('test5 ' + Date.now())
     if (!req.subscribe) res.end()
   } catch (error) {
     log += '\n' + error.toString()
