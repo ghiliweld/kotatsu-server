@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-import { http_server as braidify } from 'braidify';
+const { http_server: braidify } = require('braidify');
+const port = 8080;
 
 const app = express();
 let versionNum = 0;
@@ -22,37 +23,37 @@ for (let i = 1; i < 11; i++) {
 }
 
 app.get("/api/board", (req, res) => {
-  res.json(board);
-  // if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
-  //   res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
-  //   subscriptions[subscription_hash(req)] = res
-  //   console.log('We are subscribing at hash', subscription_hash(req))
-  //   // Send the current version
-  //   res.sendVersion({
-  //     version: versionNum++,
-  //     body: JSON.stringify(board)
-  //   })
-  // } else {
-  //     res.statusCode = 200
-  // }
+  // res.json(board);
+  if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
+    res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
+    subscriptions[subscription_hash(req)] = res
+    console.log('We are subscribing at hash', subscription_hash(req))
+    // Send the current version
+    res.sendVersion({
+      version: versionNum++,
+      body: JSON.stringify(board)
+    })
+  } else {
+      res.statusCode = 200
+  }
 
-  // // Send the current version
-  // res.sendVersion({
-  //     version: versionNum++,
-  //     body: JSON.stringify(board)
-  // })
+  // Send the current version
+  res.sendVersion({
+      version: versionNum++,
+      body: JSON.stringify(board)
+  })
 
-  // if (!req.subscribe) res.end()
+  if (!req.subscribe) res.end()
 });
 
-// app.post("/api/board", (req, res) => {
-//   for (let i = 1; i < 11; i++) {
-//     for (let j = 1; j < 11; j++) {
-//       board[`${i}_${j}`] = ".";
-//     }
-//   }
-//   res.json({ msg: "success!" });
-// });
+app.post("/api/board", (req, res) => {
+  for (let i = 1; i < 11; i++) {
+    for (let j = 1; j < 11; j++) {
+      board[`${i}_${j}`] = ".";
+    }
+  }
+  res.json({ msg: "success!" });
+});
 
 app.put("/api/board", (req, res) => {
   board[coord] = req.body.char;
@@ -111,4 +112,8 @@ function free_the_cors (req, res, next) {
       next()
 }
 
-module.exports = app;
+// module.exports = app;
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
