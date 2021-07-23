@@ -9,10 +9,10 @@ let versionNum = 0;
 var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
-app.use(free_the_cors);
-app.use(braidify);    // Add braid stuff to req and res
+// app.use(free_the_cors);
+// app.use(braidify);    // Add braid stuff to req and res
 
 const board = {};
 for (let i = 1; i < 11; i++) {
@@ -55,8 +55,8 @@ app.get("/api/board", (req, res) => {
 // });
 
 app.put("/api/board", (req, res) => {
-  // board[coord] = req.body.char;
-  // res.json({ msg: "success!" });
+  board[coord] = req.body.char;
+  res.json({ msg: "success!" });
 
   // var patches = await req.patches()  // Braidify adds .patches() to request objects
 
@@ -66,25 +66,25 @@ app.put("/api/board", (req, res) => {
   // assert(patches[0].unit === 'json')
 
   // resources['/chat'].push(JSON.parse(patches[0].content))
-  board[req.body.coord] = req.body.char;
+  // board[req.body.coord] = req.body.char;
 
-  // Now send the data to all subscribers
-  for (var k in subscriptions) {
-      var [peer, url] = JSON.parse(k)
-      if (url === req.url  // Send only to subscribers of this URL
-          && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+  // // Now send the data to all subscribers
+  // for (var k in subscriptions) {
+  //     var [peer, url] = JSON.parse(k)
+  //     if (url === req.url  // Send only to subscribers of this URL
+  //         && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
 
-          let v = versionNum;
-          subscriptions[k].sendVersion({
-              version: v,
-              body: JSON.stringify(board)
-          })
-          versionNum++;
-      }
-  }
+  //         let v = versionNum;
+  //         subscriptions[k].sendVersion({
+  //             version: v,
+  //             body: JSON.stringify(board)
+  //         })
+  //         versionNum++;
+  //     }
+  // }
   
-  res.statusCode = 200
-  res.end()
+  // res.statusCode = 200
+  // res.end()
 });
 
 // Free the CORS!
