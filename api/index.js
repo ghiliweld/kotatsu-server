@@ -10,10 +10,10 @@ let versionNum = 0;
 var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
-// app.use(free_the_cors);
-// app.use(braidify);    // Add braid stuff to req and res
+app.use(free_the_cors);
+app.use(braidify);    // Add braid stuff to req and res
 
 const board = {};
 for (let i = 1; i < 11; i++) {
