@@ -28,11 +28,11 @@ app.get("/api/board", (req, res) => {
     res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
     subscriptions[subscription_hash(req)] = res
     console.log('We are subscribing at hash', subscription_hash(req))
-    // Send the current version
-    res.sendVersion({
-      version: versionNum++,
-      body: JSON.stringify(board)
-    })
+    // // Send the current version
+    // res.sendVersion({
+    //   version: versionNum++,
+    //   body: JSON.stringify(board)
+    // })
   } else {
       res.statusCode = 200
   }
