@@ -56,8 +56,8 @@ app.post("/api/board", (req, res) => {
 });
 
 app.put("/api/board", (req, res) => {
-  board[coord] = req.body.char;
-  res.json({ msg: "success!" });
+  // board[coord] = req.body.char;
+  // res.json({ msg: "success!" });
 
   // var patches = await req.patches()  // Braidify adds .patches() to request objects
 
@@ -67,25 +67,26 @@ app.put("/api/board", (req, res) => {
   // assert(patches[0].unit === 'json')
 
   // resources['/chat'].push(JSON.parse(patches[0].content))
-  // board[req.body.coord] = req.body.char;
+  board[req.body.coord] = req.body.char;
 
   // // Now send the data to all subscribers
-  // for (var k in subscriptions) {
-  //     var [peer, url] = JSON.parse(k)
-  //     if (url === req.url  // Send only to subscribers of this URL
-  //         && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+  for (var k in subscriptions) {
+      var [peer, url] = JSON.parse(k)
+      if (url === req.url  // Send only to subscribers of this URL
+          && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
 
-  //         let v = versionNum;
-  //         subscriptions[k].sendVersion({
-  //             version: v,
-  //             body: JSON.stringify(board)
-  //         })
-  //         versionNum++;
-  //     }
-  // }
+          let v = versionNum;
+          subscriptions[k].sendVersion({
+              version: v,
+              body: JSON.stringify(board)
+          })
+      }
+  }
   
-  // res.statusCode = 200
-  // res.end()
+  versionNum++;
+
+  res.statusCode = 200
+  res.end()
 });
 
 // Free the CORS!
