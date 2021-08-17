@@ -29,14 +29,14 @@ app.get("/api/board", (req, res) => {
     subscriptions[subscription_hash(req)] = res
     console.log('We are subscribing at hash', subscription_hash(req))
     // // Send the current version
-    // res.sendVersion({
-    //   version: versionNum++,
-    //   body: JSON.stringify(board)
-    // })
   } else {
       res.statusCode = 200
   }
 
+  res.sendVersion({
+    version: versionNum++,
+    body: JSON.stringify(board)
+  })
   if (!req.subscribe) res.end()
 });
 
@@ -46,7 +46,25 @@ app.post("/api/board", (req, res) => {
       board[`${i}_${j}`] = ".";
     }
   }
-  res.json({ msg: "success!" });
+
+  for (var k in subscriptions) {
+    var [peer, url] = JSON.parse(k)
+    if (url === req.url  // Send only to subscribers of this URL
+        && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+
+        let v = versionNum;
+        subscriptions[k].sendVersion({
+            version: v,
+            body: JSON.stringify(board)
+        })
+    }
+  }
+
+  versionNum++;
+
+  res.statusCode = 200
+  res.end()
+
 });
 
 app.put("/api/board", (req, res) => {
