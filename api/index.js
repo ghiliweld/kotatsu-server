@@ -90,7 +90,7 @@ app.put("/api/board", (req, res) => {
           let v = versionNum;
           subscriptions[k].sendVersion({
               version: v,
-              body: JSON.stringify(board)
+              body: JSON.stringify(req.body)
           })
       }
   }
