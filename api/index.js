@@ -13,15 +13,22 @@ app.use(express.json());
 app.use(free_the_cors());
 app.use(braidify);    // Add braid stuff to req and res
 
-const board = {};
-for (let i = 1; i < 11; i++) {
-  for (let j = 1; j < 11; j++) {
-    board[`${i}_${j}`] = ".";
+const boards = {}
+
+const generateBoard = (url) => {
+  boards[url] = {}
+  for (let i = 1; i < 11; i++) {
+    for (let j = 1; j < 11; j++) {
+      boards[url][`${i}_${j}`] = ".";
+    }
   }
 }
 
-app.get("/api/board", (req, res) => {
+
+app.get("/api/:url", (req, res) => {
   // res.json(board);
+  let url = req.params.url;
+  generateBoard(url)
   if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
     res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
     subscriptions[subscription_hash(req)] = res
@@ -33,22 +40,37 @@ app.get("/api/board", (req, res) => {
   // Send the current version
   res.sendVersion({
       version: versionNum++,
-      body: JSON.stringify(board)
+      body: JSON.stringify(boards[url])
   })
 
   if (!req.subscribe) res.end()
 });
 
-// app.post("/api/board", (req, res) => {
-//   for (let i = 1; i < 11; i++) {
-//     for (let j = 1; j < 11; j++) {
-//       board[`${i}_${j}`] = ".";
-//     }
-//   }
-//   res.json({ msg: "success!" });
-// });
+app.post("/api/:url", (req, res) => {
+  let url = req.params.url
+  generateBoard(url)
 
-app.put("/api/board", (req, res) => {
+  for (var k in subscriptions) {
+    var [peer, url] = JSON.parse(k)
+    if (url === req.url  // Send only to subscribers of this URL
+        && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+
+        let v = versionNum;
+        subscriptions[k].sendVersion({
+            version: v,
+            body: JSON.stringify(boards[url])
+        })
+    }
+  }
+
+  versionNum++;
+
+  res.statusCode = 200
+  res.end()
+
+});
+
+app.put("/api/:url", (req, res) => {
   // board[coord] = req.body.char;
   // res.json({ msg: "success!" });
 
@@ -60,7 +82,7 @@ app.put("/api/board", (req, res) => {
   // assert(patches[0].unit === 'json')
 
   // resources['/chat'].push(JSON.parse(patches[0].content))
-  board[req.body.coord] = req.body.char;
+  boards[url][req.body.coord] = req.body.char;
 
   // Now send the data to all subscribers
   for (var k in subscriptions) {
@@ -71,7 +93,7 @@ app.put("/api/board", (req, res) => {
           let v = versionNum;
           subscriptions[k].sendVersion({
               version: v,
-              body: JSON.stringify(board)
+              body: JSON.stringify(boards[url])
           })
           versionNum++;
       }
