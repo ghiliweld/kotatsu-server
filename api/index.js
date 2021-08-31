@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-import { http_server as braidify } from 'braidify';
+const { http_server: braidify } = require('braidify');
+const port = 8080;
 
 const app = express();
 let versionNum = 0;
@@ -9,8 +10,9 @@ let versionNum = 0;
 var subscriptions = {}
 var subscription_hash = (req) => JSON.stringify([req.headers.peer, req.url])
 
+//app.use(cors());
 app.use(express.json());
-app.use(free_the_cors());
+app.use(free_the_cors);
 app.use(braidify);    // Add braid stuff to req and res
 
 const boards = {}
@@ -35,16 +37,15 @@ app.get("/api/:topic", (req, res) => {
     res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
     subscriptions[subscription_hash(req)] = res
     console.log('We are subscribing at hash', subscription_hash(req))
+    // // Send the current version
   } else {
       res.statusCode = 200
   }
 
-  // Send the current version
   res.sendVersion({
       version: versionNum++,
       body: JSON.stringify(boards[topic])
   })
-
   if (!req.subscribe) res.end()
 });
 
@@ -57,7 +58,6 @@ app.post("/api/:topic", (req, res) => {
     var [peer, url] = JSON.parse(k)
     if (url === req.url  // Send only to subscribers of this URL
         && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
-
         let v = versionNum;
         subscriptions[k].sendVersion({
             version: v,
@@ -87,7 +87,7 @@ app.put("/api/:topic", (req, res) => {
   // resources['/chat'].push(JSON.parse(patches[0].content))
   boards[topic][req.body.coord] = req.body.char;
 
-  // Now send the data to all subscribers
+  // // Now send the data to all subscribers
   for (var k in subscriptions) {
       var [peer, url] = JSON.parse(k)
       if (url === req.url  // Send only to subscribers of this URL
@@ -98,10 +98,11 @@ app.put("/api/:topic", (req, res) => {
               version: v,
               body: JSON.stringify(boards[topic])
           })
-          versionNum++;
       }
   }
   
+  versionNum++;
+
   res.statusCode = 200
   res.end()
 });
@@ -120,7 +121,7 @@ function free_the_cors (req, res, next) {
   var free_the_cors = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "OPTIONS, HEAD, GET, PUT, UNSUBSCRIBE",
-      "Access-Control-Allow-Headers": "subscribe, peer, version, parents, merge-type, content-type, patches, cache-control, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+      "Access-Control-Allow-Headers": "subscribe, peer, version, parents, merge-type, content-type, patches, cache-control"
   }
   Object.entries(free_the_cors).forEach(x => res.setHeader(x[0], x[1]))
   if (req.method === 'OPTIONS') {
@@ -130,4 +131,8 @@ function free_the_cors (req, res, next) {
       next()
 }
 
-module.exports = app;
+// module.exports = app;
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
