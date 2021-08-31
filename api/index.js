@@ -85,6 +85,7 @@ app.put("/api/:topic", (req, res) => {
   // assert(patches[0].unit === 'json')
 
   // resources['/chat'].push(JSON.parse(patches[0].content))
+  let topic = req.params.topic
   boards[topic][req.body.coord] = req.body.char;
 
   // // Now send the data to all subscribers
