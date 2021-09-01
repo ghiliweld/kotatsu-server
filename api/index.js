@@ -26,6 +26,30 @@ const generateBoard = (topic) => {
   }
 }
 
+const defaultBoard = {}
+for (let i = 1; i < 26; i++) {
+  for (let j = 1; j < 26; j++) {
+    defaultBoard[`${i}_${j}`] = ".";
+  }
+}
+
+app.get("/api/", (req, res) => {
+  // res.json(board);
+  if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
+    res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
+    subscriptions[subscription_hash(req)] = res
+    console.log('We are subscribing at hash', subscription_hash(req))
+    // // Send the current version
+  } else {
+      res.statusCode = 200
+  }
+
+  res.sendVersion({
+      version: versionNum++,
+      body: JSON.stringify(defaultBoard)
+  })
+  if (!req.subscribe) res.end()
+});
 
 app.get("/api/:topic", (req, res) => {
   // res.json(board);
@@ -50,6 +74,34 @@ app.get("/api/:topic", (req, res) => {
 });
 
 // This is for resetting the board
+
+app.post("/api/", (req, res) => {
+  
+  for (let i = 1; i < 26; i++) {
+    for (let j = 1; j < 26; j++) {
+      defaultBoard[`${i}_${j}`] = ".";
+    }
+  }
+
+  for (var k in subscriptions) {
+    var [peer, url] = JSON.parse(k)
+    if (url === req.url  // Send only to subscribers of this URL
+        && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+        let v = versionNum;
+        subscriptions[k].sendVersion({
+            version: v,
+            body: JSON.stringify(defaultBoard)
+        })
+    }
+  }
+
+  versionNum++;
+
+  res.statusCode = 200
+  res.end()
+
+});
+
 app.post("/api/:topic", (req, res) => {
   let topic = req.params.topic
   generateBoard(topic)
@@ -71,6 +123,40 @@ app.post("/api/:topic", (req, res) => {
   res.statusCode = 200
   res.end()
 
+});
+
+app.put("/api/", (req, res) => {
+  // board[coord] = req.body.char;
+  // res.json({ msg: "success!" });
+
+  // var patches = await req.patches()  // Braidify adds .patches() to request objects
+
+  // // Bug: Should return error code (40x?) for invalid request instead of crashing
+  // assert(patches.length === 1)
+  // assert(patches[0].range === '[-0:-0]')
+  // assert(patches[0].unit === 'json')
+
+  // resources['/chat'].push(JSON.parse(patches[0].content))
+  defaultBoard[req.body.coord] = req.body.char;
+
+  // // Now send the data to all subscribers
+  for (var k in subscriptions) {
+      var [peer, url] = JSON.parse(k)
+      if (url === req.url  // Send only to subscribers of this URL
+          && peer !== req.headers.peer)  { // Skip the peer that sent this PUT
+
+          let v = versionNum;
+          subscriptions[k].sendVersion({
+              version: v,
+              body: JSON.stringify(req.body)
+          })
+      }
+  }
+  
+  versionNum++;
+
+  res.statusCode = 200
+  res.end()
 });
 
 app.put("/api/:topic", (req, res) => {
