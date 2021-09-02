@@ -36,14 +36,14 @@ for (let i = 1; i < 26; i++) {
 app.get("/pages/", (req, res) => {
   // res.json(board);
   res.set('Content-Type', 'text/html');
-  res.send(Buffer.from('<h1>Hello World!</h1>'));
+  res.send(new Buffer('<h1>Hello World!</h1>'));
 });
 
 app.get("/pages/:topic", (req, res) => {
   // res.json(board);
   let topic = req.params.topic;
   res.set('Content-Type', 'text/html');
-  res.send(Buffer.from(`<h1>Hello ${topic}!</h1>`));
+  res.send(new Buffer(`<h1>Hello ${topic}!</h1>`));
 });
 
 app.get("/api/", (req, res) => {
