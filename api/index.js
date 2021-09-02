@@ -46,7 +46,7 @@ app.get("/pages/:topic", (req, res) => {
   res.send(Buffer.from(`<h1>Hello ${topic}!</h1>`));
 });
 
-/*app.get("/api/", (req, res) => {
+app.get("/api/", (req, res) => {
   // res.json(board);
   if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
     res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
@@ -235,4 +235,4 @@ function free_the_cors (req, res, next) {
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
-})*/
+})
