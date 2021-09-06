@@ -51,26 +51,28 @@ app.get("/api/", (req, res) => {
   if (!req.subscribe) res.end()
 });
 
-app.get("/api/:topic", (req, res) => {
+app.get("/api/board", (req, res) => {
   // res.json(board);
-  let topic = req.params.topic;
-  if (!boards[topic]){
-    generateBoard(topic)
-  }
-  if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
-    res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
-    subscriptions[subscription_hash(req)] = res
-    console.log('We are subscribing at hash', subscription_hash(req))
-    // // Send the current version
-  } else {
-      res.statusCode = 200
-  }
+  // let topic = req.params.topic;
+  // if (!boards[topic]){
+  //   generateBoard(topic)
+  // }
+  // if (req.subscribe) {     // Using the new subscription feature braidify is adding to req & res
+  //   res.startSubscription({ onClose: _=> delete subscriptions[subscription_hash(req)] })
+  //   subscriptions[subscription_hash(req)] = res
+  //   console.log('We are subscribing at hash', subscription_hash(req))
+  //   // // Send the current version
+  // } else {
+  //     res.statusCode = 200
+  // }
 
-  res.sendVersion({
-      version: versionNum++,
-      body: JSON.stringify(boards[topic])
-  })
-  if (!req.subscribe) res.end()
+  // res.sendVersion({
+  //     version: versionNum++,
+  //     body: JSON.stringify(boards[topic])
+  // })
+  // if (!req.subscribe) res.end()
+
+  res.send('Hello World')
 });
 
 // This is for resetting the board
