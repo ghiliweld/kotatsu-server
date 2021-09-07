@@ -65,7 +65,7 @@ app.get("/api/", (req, res) => {
 });
 
 app.get("/api/:topic", (req, res) => {
-  res.json(defaultBoard);
+  res.send('yo');
   // let topic = req.params.topic;
   // if (!boards[topic]){
   //   generateBoard(topic)
