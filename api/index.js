@@ -65,7 +65,8 @@ app.get("/api/", (req, res) => {
 });
 
 app.get("/api/:topic", (req, res) => {
-  res.send('yo');
+  res.set('Content-Type', 'text/html')
+  res.send(Buffer.from('<h1>hello<h1>'));
   // let topic = req.params.topic;
   // if (!boards[topic]){
   //   generateBoard(topic)
