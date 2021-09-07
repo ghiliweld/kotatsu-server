@@ -35,8 +35,8 @@ for (let i = 1; i < 26; i++) {
 
 app.get("/pages/", (req, res) => {
   // res.json(board);
-  res.set('Content-Type', 'text/html');
-  res.send(new Buffer('<h1>Hello World!</h1>'));
+  res.set('Content-Type', 'text/html')
+  res.send(Buffer.from('<h1>hello<h1>'));
 });
 
 app.get("/pages/:topic", (req, res) => {
